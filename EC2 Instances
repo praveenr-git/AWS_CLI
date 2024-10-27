@@ -1,0 +1,143 @@
+AWS EC2 Instance Creation Using AWS CLI
+
+This repository contains a step-by-step guide to creating an Amazon EC2 instance using AWS CLI. This guide will help you automate the setup process, from configuring AWS CLI to launching and managing your instance.
+
+Table of Contents
+
+1. Prerequisites
+
+
+2. Getting Started
+
+
+3. Step-by-Step Guide
+
+1. Create a Key Pair
+
+2. Create a Security Group
+
+3. Launch the EC2 Instance
+
+4. Retrieve Instance Information
+
+5. Connect to the EC2 Instance
+
+
+
+4. Managing the Instance
+
+
+5. Additional Resources
+
+
+
+
+---
+
+Prerequisites
+
+1. AWS CLI Installed: Make sure you have AWS CLI installed on your system.
+
+AWS CLI Installation Guide
+
+
+
+2. Configured AWS CLI: Run aws configure to set up your AWS Access Key ID, Secret Access Key, region, and output format.
+
+
+3. IAM Permissions: Ensure your IAM user has permissions to create and manage EC2 instances, key pairs, and security groups.
+
+
+
+
+---
+
+Getting Started
+
+This documentation will guide you through creating an EC2 instance with AWS CLI, managing security groups, and SSH access to the instance.
+
+
+---
+
+Step-by-Step Guide
+
+1. Create a Key Pair
+
+Generate a key pair to securely connect to your EC2 instance.
+
+aws ec2 create-key-pair --key-name MyKeyPair --query 'KeyMaterial' --output text > MyKeyPair.pem
+chmod 400 MyKeyPair.pem
+
+2. Create a Security Group
+
+Set up a security group to control inbound and outbound traffic.
+
+aws ec2 create-security-group --group-name MySecurityGroup --description "Security group for EC2 instance"
+aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --protocol tcp --port 22 --cidr 0.0.0.0/0
+
+3. Launch the EC2 Instance
+
+Launch your EC2 instance with the specified AMI ID, instance type, key pair, and security group.
+
+aws ec2 run-instances \
+    --image-id ami-0123456789abcdef0 \
+    --count 1 \
+    --instance-type t2.micro \
+    --key-name MyKeyPair \
+    --security-groups MySecurityGroup
+
+4. Retrieve Instance Information
+
+After launching the instance, get its instance ID and public IP address.
+
+aws ec2 describe-instances --query "Reservations[*].Instances[*].InstanceId" --output text
+aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress" --output text
+
+5. Connect to the EC2 Instance
+
+Use SSH to connect to your instance.
+
+ssh -i "MyKeyPair.pem" ec2-user@<Public-IP>
+
+Replace <Public-IP> with the public IP address of your instance.
+
+
+---
+
+Managing the Instance
+
+To manage your instance, you can use the following commands:
+
+Stop the Instance:
+
+aws ec2 stop-instances --instance-ids <Instance-ID>
+
+Start the Instance:
+
+aws ec2 start-instances --instance-ids <Instance-ID>
+
+Terminate the Instance:
+
+aws ec2 terminate-instances --instance-ids <Instance-ID>
+
+
+
+---
+
+Additional Resources
+
+AWS CLI EC2 Documentation
+
+Amazon EC2 Key Pairs
+
+Security Groups for EC2 Instances
+
+
+
+---
+
+This guide provides everything you need to launch and manage an EC2 instance with AWS CLI. Feel free to explore and contribute to this repository!
+
+
+---
+
